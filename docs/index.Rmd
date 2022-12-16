@@ -1,0 +1,41 @@
+---
+output: 
+    html_document:
+      css: style.css
+---
+
+------------------------------------------------------------------------
+
+# Data Analysis Process {.tabset .tabset-fade .tabset-pills}
+
+***
+
+## Scenario {.tabset .tabset-fade}
+
+[**About the company**]{.underline}
+
+Bellabeat, founded in 2013, is a high-tech company that makes smart health-focused products. A company that targets women, it has grown rapidly and by 2016 it had opened offices around the world and launched different products. Their products collect data on activity, sleep, stress and health, which allows Bellabeat to inform women about their health and habits.
+
+[**About the product**]{.underline}
+
+In this case study, it involves analysis of the Bellabeat app product. The Bellabeat app provides users with health data related to their activity, sleep, stress, menstrual cycle, and mindfulness habits. This data can help users better understand their current habits and make healthy decisions. The Bellabeat app connects to their line of smart wellness products.
+
+
+## Ask {.tabset .tabset-fade}
+
+[**Business task**]{.underline}
+
+Analyze Bellabeat app product data and find trends in order to gain insight into how consumers use the Bellabeat product. From these findings make recommendations on how these trends would help Bellabeat's marketing strategy.
+
+These questions will guide my analysis:
+
+-   What are some trends in smart device usage?
+-   How could these trends apply to Bellabeat customers?
+-   How could these trends help influence Bellabeat marketing strategy?
+
+[**Key stakeholders**]{.underline}
+
+-   **Urška Sršen:** Bellabeat's cofounder and Chief Creative Officer.
+-   **Sando Mur:** Bellabeat's cofounder and key member of the Bellabeat executive team.
+-   **Bellabeat marketing analytics team:** A team of data analysts responsible for collecting, analyzing, and reporting data that helps guide Bellabeat's marketing strategy.
+
