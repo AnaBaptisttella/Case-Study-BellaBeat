@@ -19,19 +19,8 @@ In this case study, BellaBeat, I will perform many tasks to analyze smart device
 5.  Share
 6.  Act
 
--   This repository has been organized and separated by different notebooks that are linked for each step.
+-   All the details about this case study can be accessed at here: [Data Analysis Process](https://anabaptisttella.github.io/Case-Study-BellaBeat/), where you can access the R code, findings, and solutions about this study.
 
 -   The following tools were used to complete the steps: Google Sheets and RStudio
 
 ------------------------------------------------------------------------
-
-## Scenario
-
-### **About the company**
-
-Bellabeat, founded in 2013, is a high-tech company that makes smart health-focused products. A company that targets women, it has grown rapidly and by 2016 it had opened offices around the world and launched different products. Their products collect data on activity, sleep, stress and health, which allows Bellabeat to inform women about their health and habits.
-
-### **About the product**
-
-In this case study, it involves analysis of the Bellabeat app product. The Bellabeat app provides users with health data related to their activity, sleep, stress, menstrual cycle, and mindfulness habits. This data can help users better understand their current habits and make healthy decisions. The Bellabeat app connects to their line of smart wellness products.
-
