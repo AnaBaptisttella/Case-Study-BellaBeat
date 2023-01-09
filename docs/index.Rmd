@@ -30,7 +30,7 @@ In this case study, it involves analysis of the Bellabeat app product. The Bella
 
 Analyze Bellabeat app product data and find trends in order to gain insight into how consumers use the Bellabeat product. From these findings make recommendations on how these trends would help Bellabeat's marketing strategy.
 
-These questions will guide my analysis:
+These questions will guide our analysis:
 
 -   What are some trends in smart device usage?
 -   How could these trends apply to Bellabeat customers?
@@ -60,11 +60,43 @@ In the following table, all summarized information can be found:
 
 <br>
 
-```{r}
+```{r message=FALSE, warning=FALSE}
+
+# importing and creating a dataframe with data et organization summary
 
 library(readr)
-dataset_organization_summary <- read_csv("data_source/dataset_organization_summary.csv")
 
-View(dataset_organization_summary)
+dataset_organization_summary <- read_csv("dataset_organization_summary.csv", show_col_types = FALSE)
+
+
+# displaying dataframe as table with additional formatting using knitr package and kable function
+
+library(dplyr)
+library(kableExtra)
+library(knitr)
+
+dataset_organization_summary %>% kable(align = "l") %>% 
+                            kable_styling(full_width = FALSE, bootstrap_options = "striped")
 
 ```
+
+<br>
+
+From the table above, we can draw some conclusions about the dataset:
+
+- Some contents are for individual analysis by user, such as MET value (dataset - Nr. 13) or not comprehensive enough for analysis, such as Value and logID (dataset - Nr. 14).
+
+- In daily timeframe dataset (Nr. 2-4), when we observed the contents, we noticed that all the information is present in a single dataset, which is dataset (Nr. 1). In this situation, we will focus only on the dataset (Nr. 1) that contains all the information we need.
+
+- Other problem we noticed is about the tracking period. All the data is from 2016, which is not recent compared to 2022 (6 years ago), which implies that this data might differ from current habits. Also, most of the recorded data is recorded around (4/12 - 5/12/2016), so for 31 days, which is not a big deal because it could cause some bias. Finally, 2 datasets with Wide form (Nr. 10, 12 and 16) have a different recorded data time (4/13 - 5/13/2016).
+
+- About how many users have shared their personal tracking, 18 available CVS files shows that 14 datasets contain 33 users data, 2 contain 24 users data, 1 contains 14 users data (Nr. 5) , and 1 contains 8 (Nr. 18) users data. In this situation we will limit our analysis to datasets with data from 24 and 33 users, because a large sample size will come closest to representing the population as a whole.
+
+- Looking at the dataset with a time period in minutes (Nr. 9, 11 and 15), it can be seen that the analysis falls into a very detailed perspective. Since we do not have much data regarding the number of users, this analysis may give us little information and inconsistent conclusions.
+
+From these limitations, we decided not to continue in the next step by analyzing some datasets, Nr. 2,3,4,5, 9, 10, 11, 12, 13, 14, 15, 16 and 18. Even with these limitations, the datasets we will be focusing on, still remain useful on finding trends in user behavior and making predictions that can help Bellabeat's marketing team.
+
+
+
+
+
