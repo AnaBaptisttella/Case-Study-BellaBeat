@@ -64,16 +64,17 @@ In the following table, all summarized information can be found:
 
 # importing and creating a dataframe with data et organization summary
 
-library(readr)
+library(readr) #for read in large flat files
 
 dataset_organization_summary <- read_csv("dataset_organization_summary.csv", show_col_types = FALSE)
 
 
 # displaying dataframe as table with additional formatting using knitr package and kable function
 
-library(dplyr)
+library(dplyr) #for data manipulation
+library(knitr) 
 library(kableExtra)
-library(knitr)
+
 
 dataset_organization_summary %>% kable(align = "l") %>% 
                             kable_styling(full_width = FALSE, bootstrap_options = "striped")
@@ -84,19 +85,273 @@ dataset_organization_summary %>% kable(align = "l") %>%
 
 From the table above, we can draw some conclusions about the dataset:
 
-- Some contents are for individual analysis by user, such as MET value (dataset - Nr. 13) or not comprehensive enough for analysis, such as Value and logID (dataset - Nr. 14).
+-   Some contents are for individual analysis by user, such as MET value (dataset - Nr. 13) or not comprehensive enough for analysis, such as Value and logID (dataset - Nr. 14).
 
-- In daily timeframe dataset (Nr. 2-4), when we observed the contents, we noticed that all the information is present in a single dataset, which is dataset (Nr. 1). In this situation, we will focus only on the dataset (Nr. 1) that contains all the information we need.
+-   In daily timeframe dataset (Nr. 2-4), when we observed the contents, we noticed that all the information is present in a single dataset, which is dataset (Nr. 1). In this situation, we will focus only on the dataset (Nr. 1) that contains all the information we need.
 
-- Other problem we noticed is about the tracking period. All the data is from 2016, which is not recent compared to 2022 (6 years ago), which implies that this data might differ from current habits. Also, most of the recorded data is recorded around (4/12 - 5/12/2016), so for 31 days, which is not a big deal because it could cause some bias. Finally, 2 datasets with Wide form (Nr. 10, 12 and 16) have a different recorded data time (4/13 - 5/13/2016).
+-   Other problem we noticed is about the tracking period. All the data is from 2016, which is not recent compared to 2022 (6 years ago), which implies that this data might differ from current habits. Also, most of the recorded data is recorded around (4/12 - 5/12/2016), so for 31 days, which is not a big deal because it could cause some bias. Finally, 2 datasets with Wide form (Nr. 10, 12 and 16) have a different recorded data time (4/13 - 5/13/2016).
 
-- About how many users have shared their personal tracking, 18 available CVS files shows that 14 datasets contain 33 users data, 2 contain 24 users data, 1 contains 14 users data (Nr. 5) , and 1 contains 8 (Nr. 18) users data. In this situation we will limit our analysis to datasets with data from 24 and 33 users, because a large sample size will come closest to representing the population as a whole.
+-   About how many users have shared their personal tracking, 18 available CVS files shows that 14 datasets contain 33 users data, 2 contain 24 users data, 1 contains 14 users data (Nr. 5) , and 1 contains 8 (Nr. 18) users data. In this situation we will limit our analysis to datasets with data from 24 and 33 users, because a large sample size will come closest to representing the population as a whole.
 
-- Looking at the dataset with a time period in minutes (Nr. 9, 11 and 15), it can be seen that the analysis falls into a very detailed perspective. Since we do not have much data regarding the number of users, this analysis may give us little information and inconsistent conclusions.
+-   Looking at the dataset with a time period in minutes (Nr. 9, 11 and 15), it can be seen that the analysis falls into a very detailed perspective. Since we do not have much data regarding the number of users, this analysis may give us little information and inconsistent conclusions.
 
 From these limitations, we decided not to continue in the next step by analyzing some datasets, Nr. 2,3,4,5, 9, 10, 11, 12, 13, 14, 15, 16 and 18. Even with these limitations, the datasets we will be focusing on, still remain useful on finding trends in user behavior and making predictions that can help Bellabeat's marketing team.
 
+## Process {.tabset .tabset-fade}
 
+<br>
+
+In this case study, R language will be used to clean, transform and visualize data.
+
+<br>
+
+[**Setting up the environment**]{.underline}
+
+First of all, we started to install and loading important packages in R Studio.
+
+<br>
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Setting up my environment 
+
+library(tidyverse) # important package for data analysis
+library(lubridate) # important package to work with dates and times
+
+
+library(tidyr) # a framework for creating and shaping tidy data
+library(dplyr) # for data manipulation
+library(scales) # converting from data values to perceptual properties
+library(ggplot2) #for data visualization
+```
+
+<br>
+
+[**Importing datasets**]{.underline}
+
+In the data organization step it was verified that some datasets had some limitations for analysis, in this way we selected some important datasets to start the cleaning process, such as:
+
+-   dailyActivity_merged
+
+-   hourlyCalories_merged
+
+-   hourlyIntensities_merged
+
+-   hourlySteps_merged
+
+-   sleepDay_merged
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Importing and creating dataframes
+
+daily_activity <- read_csv("dailyActivity_merged.csv")
+
+hourly_calories <- read_csv("hourlyCalories_merged.csv")
+hourly_intensities <- read_csv("hourlyIntensities_merged.csv")
+hourly_steps <- read_csv("hourlySteps_merged.csv")
+
+day_sleep <- read_csv("sleepDay_merged.csv")
+```
+
+<br>
+
+After that, to view dataframes and check the structure of dataframes, data type and column names, str() function was used to check these information:
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Preview of dataframes 
+
+str(daily_activity)
+
+str(hourly_calories)
+str(hourly_intensities)
+str(hourly_steps)
+
+str(day_sleep)
+```
+
+<br>
+
+[**Cleaning process**]{.underline}
+
+Before merging some datasets to work better in later steps, it is a good practice to make sure the data is clean. First we started checking for duplicates and NA values, then we removed them. After that, we examined how many unique IDs per dataframe we have to work with.
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Checking for duplicates 
+
+sum(duplicated(daily_activity))
+
+sum(duplicated(hourly_calories))
+sum(duplicated(hourly_intensities))
+sum(duplicated(hourly_steps))
+
+sum(duplicated(day_sleep))
+```
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Checking for NA values
+
+sum(is.na(daily_activity))
+
+sum(is.na(hourly_calories))
+sum(is.na(hourly_intensities))
+sum(is.na(hourly_steps))
+
+sum(is.na(day_sleep))
+```
+
+<br>
+
+From these results, we need to remove 3 duplicates in the day_sleep dataframe and check again if it still has duplicates.
+
+```{r message=FALSE, warning=FALSE}
+
+#Removing duplicates in dataframe
+
+day_sleep <- day_sleep %>% 
+  distinct() 
+
+#Checking for duplicate in day_sleep dataframe
+
+sum(duplicated(day_sleep))
+```
+
+<br>
+
+Now we need to sure about how many unique user IDs we have.
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Checking how many unique user IDs 
+
+n_distinct(daily_activity$Id)
+
+n_distinct(hourly_calories$Id)
+n_distinct(hourly_intensities$Id)
+n_distinct(hourly_steps$Id)
+
+n_distinct(day_sleep$Id)
+
+```
+
+<br>
+
+[**Transforming data**]{.underline}
+
+In order to have consistency in the column names and data-time format, in this step we will do some manipulations, such as checking the column names in the dataframe, renaming columns (if necessary), changing formats and separating date-time column.
+
+```{r message=FALSE, warning=FALSE}
+
+#Checking the column names
+
+colnames(daily_activity)
+
+colnames(hourly_calories)
+colnames(hourly_intensities)
+colnames(hourly_steps)
+
+colnames(day_sleep)
+
+```
+
+```{r}
+
+#Rename the column name “SleepDay” to “ActivityDate” in day_sleep dataframe
+
+day_sleep <- rename(day_sleep, ActivityDate = SleepDay)
+colnames(day_sleep)
+
+```
+
+<br>
+
+The next step is to change the format in the date-time field. In previous, when checking dataframe structure it was seen that these fields are as chr(character), so it is necessary to change the fields to date. In this situation we used as.Date() function and as.POSIXct() (when there are time components). To split the date/time column the separate() function was used.
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#Formatting date field, <chr> into <date>
+##Separating date-time column dataframe
+
+
+daily_activity_clean <- daily_activity %>% 
+  mutate(ActivityDate = as.Date(ActivityDate, "%m/%d/%Y"))
+
+day_sleep_clean <- day_sleep %>% 
+  mutate(ActivityDate = as.Date(ActivityDate, "%m/%d/%Y"))
+
+
+#hourly dataframe
+
+hourly_calories_clean <- hourly_calories %>% 
+  mutate(ActivityHour = as.POSIXct(ActivityHour,format="%m/%d/%Y %I:%M:%S %p", tz=Sys.timezone())) %>% 
+  separate(ActivityHour, c("ActivityDate", "ActivityHour"), sep= " ") %>% 
+  mutate(ActivityDate = as.Date(ActivityDate, "%Y-%m-%d"))
+
+hourly_intensities_clean <- hourly_intensities %>% 
+  mutate(ActivityHour = as.POSIXct(ActivityHour,format="%m/%d/%Y %I:%M:%S %p", tz=Sys.timezone())) %>% 
+  separate(ActivityHour, c("ActivityDate", "ActivityHour"), sep= " ") %>% 
+  mutate(ActivityDate = as.Date(ActivityDate, "%Y-%m-%d"))
+
+hourly_steps_clean <- hourly_steps %>% 
+  mutate(ActivityHour = as.POSIXct(ActivityHour,format="%m/%d/%Y %I:%M:%S %p", tz=Sys.timezone())) %>% 
+  separate(ActivityHour, c("ActivityDate", "ActivityHour"), sep= " ") %>% 
+  mutate(ActivityDate = as.Date(ActivityDate, "%Y-%m-%d"))
+
+```
+
+```{r message=FALSE, warning=FALSE}
+
+#checking the modifications
+
+glimpse(daily_activity_clean)
+
+glimpse(hourly_calories_clean)
+glimpse(hourly_intensities_clean)
+glimpse(hourly_steps_clean)
+
+glimpse(day_sleep_clean)
+
+```
+<br>
+
+[**Merging the dataframes**]{.underline}
+
+In order to better organize, reduce the number of dataframes to be worked on and improve visualization of correlations that may exist between data in the same time interval. From the dataframe structures it was possible to verify that the dataframes can be merged by day and hour. Once the dataframes have in common the primary key that are ID and date.
+
+<br>
+
+```{r message=FALSE, warning=FALSE}
+
+#Merging dataframes by timeframe
+
+#by day
+
+day_activity_sleep_df <- merge(daily_activity_clean, day_sleep_clean, by = c("Id","ActivityDate"))
+
+#by hour
+
+hour_df <- merge(merge(hourly_calories_clean, hourly_intensities_clean, by = c("Id","ActivityDate", "ActivityHour")), hourly_steps_clean, by = c("Id","ActivityDate", "ActivityHour"))  
+
+#chekcing the final structure
+
+glimpse(day_activity_sleep_df)
+
+glimpse(hour_df)
+
+```
 
 
 
