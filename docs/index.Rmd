@@ -62,12 +62,11 @@ In the following table, all summarized information can be found:
 
 ```{r message=FALSE, warning=FALSE}
 
-# importing and creating a dataframe with data et organization summary
+# importing and creating a dataframe with dataset organization summary
 
 library(readr) #for read in large flat files
 
 dataset_organization_summary <- read_csv("dataset_organization_summary.csv", show_col_types = FALSE)
-
 
 # displaying dataframe as table with additional formatting using knitr package and kable function
 
@@ -75,19 +74,17 @@ library(dplyr) #for data manipulation
 library(knitr) 
 library(kableExtra)
 
-
 dataset_organization_summary %>% kable(align = "l") %>% 
                             kable_styling(full_width = FALSE, bootstrap_options = "striped")
 
 ```
-
 <br>
 
 From the table above, we can draw some conclusions about the dataset:
 
 -   Some contents are for individual analysis by user, such as MET value (dataset - Nr. 13) or not comprehensive enough for analysis, such as Value and logID (dataset - Nr. 14).
 
--   In daily timeframe dataset (Nr. 2-4), when we observed the contents, we noticed that all the information is present in a single dataset, which is dataset (Nr. 1). In this situation, we will focus only on the dataset (Nr. 1) that contains all the information we need.
+-   In daily timeframe dataset (Nr. 2 - 4), when we observed the contents, we noticed that all the information is present in a single dataset, which is dataset (Nr. 1). In this situation, we will focus only on the dataset (Nr. 1) that contains all the information we need.
 
 -   Other problem we noticed is about the tracking period. All the data is from 2016, which is not recent compared to 2022 (6 years ago), which implies that this data might differ from current habits. Also, most of the recorded data is recorded around (4/12 - 5/12/2016), so for 31 days, which is not a big deal because it could cause some bias. Finally, 2 datasets with Wide form (Nr. 10, 12 and 16) have a different recorded data time (4/13 - 5/13/2016).
 
@@ -110,20 +107,17 @@ In this case study, R language will be used to clean, transform and visualize da
 First of all, we started to install and loading important packages in R Studio.
 
 <br>
-
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 #Setting up my environment 
 
 library(tidyverse) # important package for data analysis
 library(lubridate) # important package to work with dates and times
 
-
 library(tidyr) # a framework for creating and shaping tidy data
 library(dplyr) # for data manipulation
 library(scales) # converting from data values to perceptual properties
 library(ggplot2) #for data visualization
 ```
-
 <br>
 
 [**Importing datasets**]{.underline}
@@ -141,7 +135,6 @@ In the data organization step it was verified that some datasets had some limita
 -   sleepDay_merged
 
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Importing and creating dataframes
@@ -154,13 +147,11 @@ hourly_steps <- read_csv("hourlySteps_merged.csv")
 
 day_sleep <- read_csv("sleepDay_merged.csv")
 ```
-
 <br>
 
 After that, to view dataframes and check the structure of dataframes, data type and column names, str() function was used to check these information:
 
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Preview of dataframes 
@@ -173,15 +164,13 @@ str(hourly_steps)
 
 str(day_sleep)
 ```
-
 <br>
 
 [**Cleaning process**]{.underline}
 
-Before merging some datasets to work better in later steps, it is a good practice to make sure the data is clean. First we started checking for duplicates and NA values, then we removed them. After that, we examined how many unique IDs per dataframe we have to work with.
+Before merging some datasets to work better in later steps, it is a good practice to make sure the data is clean. First, we started checking for duplicates and NA values, then we removed them. After that, we examined how many unique IDs per dataframe we have to work with.
 
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Checking for duplicates 
@@ -194,9 +183,7 @@ sum(duplicated(hourly_steps))
 
 sum(duplicated(day_sleep))
 ```
-
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Checking for NA values
@@ -209,11 +196,11 @@ sum(is.na(hourly_steps))
 
 sum(is.na(day_sleep))
 ```
-
 <br>
 
 From these results, we need to remove 3 duplicates in the day_sleep dataframe and check again if it still has duplicates.
 
+<br>
 ```{r message=FALSE, warning=FALSE}
 
 #Removing duplicates in dataframe
@@ -231,7 +218,6 @@ sum(duplicated(day_sleep))
 Now we need to sure about how many unique user IDs we have.
 
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Checking how many unique user IDs 
@@ -245,13 +231,13 @@ n_distinct(hourly_steps$Id)
 n_distinct(day_sleep$Id)
 
 ```
-
 <br>
 
 [**Transforming data**]{.underline}
 
 In order to have consistency in the column names and data-time format, in this step we will do some manipulations, such as checking the column names in the dataframe, renaming columns (if necessary), changing formats and separating date-time column.
 
+<br>
 ```{r message=FALSE, warning=FALSE}
 
 #Checking the column names
@@ -274,7 +260,6 @@ day_sleep <- rename(day_sleep, ActivityDate = SleepDay)
 colnames(day_sleep)
 
 ```
-
 <br>
 
 The next step is to change the format in the date-time field. In previous, when checking dataframe structure it was seen that these fields are as chr(character), so it is necessary to change the fields to date. In this situation we used as.Date() function and as.POSIXct() (when there are time components). To split the date/time column the separate() function was used.
@@ -285,13 +270,11 @@ The next step is to change the format in the date-time field. In previous, when 
 #Formatting date field, <chr> into <date>
 ##Separating date-time column dataframe
 
-
 daily_activity_clean <- daily_activity %>% 
   mutate(ActivityDate = as.Date(ActivityDate, "%m/%d/%Y"))
 
 day_sleep_clean <- day_sleep %>% 
   mutate(ActivityDate = as.Date(ActivityDate, "%m/%d/%Y"))
-
 
 #hourly dataframe
 
@@ -332,7 +315,6 @@ glimpse(day_sleep_clean)
 In order to better organize, reduce the number of dataframes to be worked on and improve visualization of correlations that may exist between data in the same time interval. From the dataframe structures it was possible to verify that the dataframes can be merged by day and hour. Once the dataframes have in common the primary key that are ID and date.
 
 <br>
-
 ```{r message=FALSE, warning=FALSE}
 
 #Merging dataframes by timeframe
@@ -353,5 +335,383 @@ glimpse(hour_df)
 
 ```
 
+## Analyze{.tabset .tabset-fade}
 
+<br>
+
+To begin the analysis step and establish hypotheses about the available data, it is interesting to first evaluate the statistical data to gain first insights. In this way, the summary() function automatically calculates key statistics from the data frames, which allows with the outputs to explore the data. From the dataframes it is seen that only a few variables are interesting to investigate for statistical analysis and further analysis, such as: Total Steps or Steps, Active by level in minutes (Very, Fairly, Lightly, Sedentary), Calories, Total minutes asleep and Total Time in Bed.
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#Exploring the dataframes with summary() function
+
+day_activity_sleep_df %>% 
+  select(TotalSteps, VeryActiveMinutes, FairlyActiveMinutes, LightlyActiveMinutes, SedentaryMinutes, Calories, TotalMinutesAsleep, TotalTimeInBed) %>% 
+  summary()
+
+hour_df %>% 
+  select(Calories, StepTotal) %>% 
+  summary()
+
+```
+<br>
+
+About the outcomes what can we observe:
+
+- In the data per day users performed an average of 8515 steps, spent 25 minutes in very active activities versus 712 minutes in sedentary activities, 2389 calories are burned, 419 minutes are spent asleep, and 458.5 minutes in bed.
+
+- Per hour the users burned an average of 97.39 calories and performed 320.2 steps in total.
+
+Using these numbers we can conclude for all users as follows:
+
+- The total number of steps is low around the recommendation based on literature. The recommendation from some studies [[1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5015672/), [2](https://ijbnpa.biomedcentral.com/articles/10.1186/1479-5868-8-79#Sec11)] has shown that 10,000 steps/day is a good number for adults to become healthy and have less symptoms about anxiety, depression, fatigue and so on.
+
+- Active by level in minutes shows that users spent a lot of time doing activities in the sedentary category around 712 min per day and in very active activities was low around 75 min per day. Womens Health [[3](https://www.womenshealth.gov/getting-active/how-be-active-health#3)] reports that a value of 150 min for moderate activities and 75 min for intense activities, both each week is ideal for maintaining a healthy lifestyle.
+
+- About how long users spent asleep showed that 419min or 6 hours and 59 minutes is the average. The National Sleep Foundation advises [[4](https://pubmed.ncbi.nlm.nih.gov/29073412)] that adults need about 7-9 hours of sleep per night. About the time in bed it is interesting to note that users spent approximately 39 minutes to fall asleep.
+
+<br>
+
+[**Data aggregation and visualizations**]{.underline}
+
+To proceed with the analysis it is necessary to aggregate the data to make it useful and accessible. In this way we will aggregate the data in the following ways:
+
+- **By activity level (Inactive, Moderate Active, Active and Very Active):**  In order to evaluate the type of user and which ones fit into an activity level, since in previous steps it was seen that a large number of users spend a lot of time at the sedentary level. So to confirm the hypothesis raised earlier, we will classify the users based on the number of steps per day. Once this type of categorization is already established in the literature [[5](https://www.healthline.com/health/how-many-steps-a-day#How-many-steps-should-you-take-a-day?), [6](https://www.10000steps.org.au/articles/healthy-lifestyles/counting-steps/)]. We will consider the following categories:
+
+  - Inactive: < 5000 steps/ day
+  - Moderate Active: 5000 - 10000 steps/day
+  - Active: 10000 - 12500 steps/day
+  - Very Active: > 12500 steps/day
+  
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#Activity level by user
+
+#Grouping the data by user and calculating the mean total steps 
+
+Id_mean_total_steps <- day_activity_sleep_df %>% 
+  group_by(Id) %>%
+  summarise(mean_TotalSteps = mean(TotalSteps)) 
+             
+head(Id_mean_total_steps)
+
+#categorizing data by activity level             
+             
+activity_level_by_user <- Id_mean_total_steps %>%
+               mutate(user_level = case_when(
+                 mean_TotalSteps < 5000 ~ "Inactive",
+                 mean_TotalSteps >= 5000 & mean_TotalSteps < 10000 ~ "Moderate Active",
+                 mean_TotalSteps >= 10000 & mean_TotalSteps < 12500 ~ "Active", 
+                 mean_TotalSteps >= 12500  ~ "Very Active"
+               ))
+             
+head(activity_level_by_user)
+
+#calculating the percentage of users by level
+
+percentage_user_level <- activity_level_by_user %>% 
+  group_by(user_level) %>% 
+  summarise(percent_by_user = (n() / nrow(activity_level_by_user))) %>% 
+  mutate(labels = scales::percent(percent_by_user)) %>% 
+  mutate(user_level = factor(user_level, levels = c('Inactive', 'Moderate Active', 'Active', 'Very Active')))
+
+head(percentage_user_level)
+
+#visualizing the data: Distribution of users by activity level
+
+colors <-  c("#33CC00", "#FF3333", "#FBC932", "#56B4E9")
+
+ggplot(data = percentage_user_level, aes(x="", y = percent_by_user, fill = user_level)) +
+  geom_col(color = "black") +
+  coord_polar("y", start = 0) + 
+  geom_text(aes(label = paste0(round(percent_by_user*100), "%")), 
+            position = position_stack(vjust = 0.5)) +
+  guides(fill = guide_legend(title = "Level")) +
+  theme(panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(), 
+        plot.title = element_text(vjust = -2, size = 14),
+        plot.background = element_rect(color = "gray", size = 1)) +
+  ggtitle("Distribution of users by activity level") +
+  scale_fill_manual(values = colors)
+
+```
+<br>
+
+**Conclusion:** As expected it is noted that the majority of users, approximately 79%, are in the inactive and moderately active category.
+
+<br>
+
+-**By weekday (Monday through Sunday):** In order to understand this user profile and help Bellabeat's marketing team to make decisions, it is necessary to evaluate how these users behave throughout the week and during the hours of the day. The following data will be organized in a weekday perspective for all users:
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#By weekday (Monday through Sunday) 
+
+weekday_total_steps <- daily_activity_clean %>% 
+   mutate(weekday = weekdays(ActivityDate)) %>%
+   select(Id, weekday, TotalSteps) %>% 
+   group_by(weekday) %>% 
+   summarise(mean_TotalSteps = mean(TotalSteps)) %>% 
+   mutate(weekday = factor(weekday, levels = c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'))) 
+
+#Visualizing the data: Total Steps(average) per weekday
+
+ggplot(weekday_total_steps, aes(x = weekday, y = mean_TotalSteps, fill = "#FFB40F"))+
+   geom_bar(stat='identity') +
+   geom_hline(yintercept = 10000, linetype = "dashed") +
+   labs(title = "Total Steps(average) per weekday", x= "", y = "Total Steps(average)") +
+   theme(legend.position="none",
+         plot.title = element_text(vjust = 1, size = 14),
+         plot.background = element_rect(color = "gray", size = 1))
+
+```
+<br>
+
+**Conclusion:** It can be seen that the average number of steps taken throughout the day is below the recommended amount (10 000 per day), with the lowest average on Sunday.
+
+<br>
+
+In the same way we can evaluate by hour and analyse how users behave throughout the day, from the same parameter (average total steps).
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#By hour 
+
+hourly_total_steps <- hourly_steps_clean %>% 
+  select(Id, ActivityHour, StepTotal) %>% 
+  group_by(ActivityHour) %>% 
+  summarise(mean_TotalSteps = mean(StepTotal))
+  
+#Visualizing the data: Total Steps(average) per hour
+
+ggplot(hourly_total_steps, aes(x = ActivityHour, y = mean_TotalSteps, fill = "#FFB40F"))+
+  geom_bar(stat='identity') +
+  labs(title = "Total Steps(average) per hour", x= "", y = "Total Steps(average)") +
+  theme(legend.position="none",
+        plot.title = element_text(vjust = 1, size = 14),
+        plot.background = element_rect(color = "gray", size = 1)) +
+  theme(axis.text.x = element_text(angle = 45,vjust = 0.5, hjust = 1))
+
+```
+<br>
+
+**Conclusion:** It is possible to observe from the figure that in the period between 6am and 2pm there is an increase in the amount of steps taken with a decrease over 3pm. From 16-20h is the interval of highest activity among users.
+
+<br>
+
+- **By sleep duration (<7h, 7-9h and >9h):** To check the distribution of users in relation to sleep time, in this section we will categorize the data of asleep users in the following way [[7](https://www.sleepfoundation.org/how-sleep-works/how-much-sleep-do-we-really-need),[8](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2864873/)]:
+
+- Short Sleep: less than 7 h
+- Ideal Sleep: between 7 to 9 h
+- Long Sleep: more than 9 h
+
+<br>
+
+From this categorization it is possible to view the percentage of users in each category.
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#By Sleep duration
+
+#Transforming data from data sleep
+
+sleep_duration_by_user <- day_activity_sleep_df %>%
+  select(Id, TotalMinutesAsleep, TotalTimeInBed) %>% 
+  mutate(Total_Asleep_Hour = TotalMinutesAsleep/60, Total_TimeInBed_Hour = TotalTimeInBed/60) %>% 
+  mutate(Total_Time_fall_Asleep_Minutes = (TotalTimeInBed - TotalMinutesAsleep))
+         
+#Categorizing sleep data         
+ 
+sleep_duration_distribuition <-  sleep_duration_by_user %>% 
+  group_by(Id) %>% 
+  summarise(mean_Total_Asleep_Hour = mean(Total_Asleep_Hour)) %>% 
+  mutate(sleep_duration = case_when(
+    mean_Total_Asleep_Hour < 7 ~ "Short Sleep",
+    mean_Total_Asleep_Hour >= 7 & mean_Total_Asleep_Hour < 9 ~ "Ideal Sleep",
+    mean_Total_Asleep_Hour >= 9  ~ "Long Sleep"
+           )) 
+
+#Calculating the percentage of users by sleep duration
+
+percentage_user <- sleep_duration_distribuition %>% 
+  group_by(sleep_duration) %>% 
+  summarise(percent_by_user = (n() / nrow(sleep_duration_distribuition))) %>% 
+  mutate(labels = scales::percent(percent_by_user)) %>% 
+  mutate(sleep_duration = factor(sleep_duration, levels = c('Short Sleep', 'Ideal Sleep', 'Long Sleep')))
+
+#Visualizing the data: Percentage of users by sleep duration
+
+colors <-  c("#FF3333", "#FBC932",  "#33CC00")
+
+ggplot(data = percentage_user, aes(x = sleep_duration,  y = labels, fill = sleep_duration)) +
+    geom_col()  +
+    labs(title = "Percentage of users by sleep duration", x= "", y = "") +
+    theme(legend.position="none",
+          plot.title = element_text(vjust = 1, size = 14),
+          plot.background = element_rect(color = "gray", size = 1)) +
+    guides(fill = guide_legend(title = "Duration")) +
+    scale_fill_manual(values = colors)
+
+```
+<br>
+
+**Conclusion:** From the figure it is possible to observe that 54% of users belong to the group of users who sleep less than 7h as recommended by the National Sleep Foundation guidelines.
+
+<br>
+
+In addition, with this data it was possible to evaluate how the users of each category sleep throughout week.
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#Calculating the asleep time by weekday
+
+weekday_asleep_hour <- day_activity_sleep_df %>% 
+  mutate(weekday = weekdays(ActivityDate)) %>%
+  select(Id, weekday, TotalMinutesAsleep) %>% 
+  mutate(Total_Asleep_Hour = TotalMinutesAsleep/60) %>% 
+  mutate(sleep_duration = case_when(
+    Total_Asleep_Hour < 7 ~ "Short Sleep",
+    Total_Asleep_Hour >= 7 & Total_Asleep_Hour < 9 ~ "Ideal Sleep",
+    Total_Asleep_Hour >= 9  ~ "Long Sleep"
+  )) %>% 
+  mutate(sleep_duration = factor(sleep_duration, levels = c('Short Sleep', 'Ideal Sleep', 'Long Sleep'))) %>% 
+  mutate(weekday = factor(weekday, levels = c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'))) 
+  
+#Visualizing the data: Distribution of users by sleep hours throughout the week
+
+colors <-  c("#FF3333", "#FBC932",  "#33CC00")
+
+ggplot(data = weekday_asleep_hour, aes(x = Total_Asleep_Hour, y = stat(count) , fill = sleep_duration)) +
+    geom_histogram(position = 'dodge', bins = 30) +
+    facet_wrap(~weekday) +
+    labs(title = "Distribution of users by sleep hours throughout the week", x= "hour(h)", y = "Count of users") +
+    guides(fill = guide_legend(title = "Duration")) +
+    theme(legend.justification = "top",
+           plot.title = element_text(vjust = 1, size = 14),
+           plot.background = element_rect(color = "gray", size = 1)) +
+    scale_fill_manual(values = colors) 
+
+ggplot(data = weekday_asleep_hour, aes(x=weekday,y = stat(count), fill=sleep_duration)) +
+  geom_bar(position="dodge", alpha = 0.6) +
+  labs(title = "Distribution of users by sleep hours throughout the week", x= "", y = "Count of users") +
+  guides(fill = guide_legend(title = "Duration")) +
+  theme(legend.justification = "top", 
+         plot.title = element_text(vjust = 1, size = 14),
+         plot.background = element_rect(color = "gray", size = 1)) +
+  scale_fill_manual(values = colors)
+
+```
+<br>
+
+**Conclusion:** Based on the figure it can be observed that most users had short sleep (<7 h) on Tuesday, Friday and Saturday. Regarding ideal sleep, users slept between 7-9h in the middle of the week (Wednesday and Thursday) and long sleep (>9h) occurred on Sunday.
+
+<br>
+
+After these conclusions, we can check the data we have for any correlations, in order to investigate if there are any dependencies between the variables. Thus, we will investigate two situations:
+
+<br>
+
+**1. If the more steps the users do more calories are burned**
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+#Correlation
+
+# Calories burned vs Total steps 
+
+ggplot(data = day_activity_sleep_df, aes(x = TotalSteps, y = Calories)) +
+  geom_point(color = '#F8766D') +
+  geom_smooth(color = '#FFD20F') +
+  labs(title = "Calories Burned by Total Steps (per day)", x= "Total Steps", y = "Calories") +
+  theme(plot.title = element_text(vjust = 1, size = 14),
+        plot.background = element_rect(color = "gray", size = 1))
+
+```
+<br>
+
+**Conclusion:** we can conclude that there is a positive relationship between the total calories burned and the number of steps taken per day, i.e. the more steps a user takes per day, the more calories will be burned.
+
+<br>
+
+**2. If the calories expended during the day influences the time to fall asleep**
+
+<br>
+```{r message=FALSE, warning=FALSE}
+
+# Calories burned vs Total Time Fall Asleep (per day)
+
+# Calculating total time for Asleep 
+
+calories_sleep_df <- day_activity_sleep_df %>% 
+  mutate(Total_Time_fall_Asleep_Minutes = (TotalTimeInBed - TotalMinutesAsleep))
+ 
+# Visualizing the data: Calories Burned by Total Time for Assleep (per day)
+
+ggplot(data = calories_sleep_df, aes(x = Total_Time_fall_Asleep_Minutes, y = Calories), position = "jitter") +
+  geom_point(color = '#F8766D') +
+  geom_smooth(color = '#FFD20F') +
+  labs(title = "Calories Burned by Total Time for Assleep (per day)", x= "Total Time(min)", y = "Calories") +
+  theme(plot.title = element_text(vjust = 1, size = 14),
+        plot.background = element_rect(color = "gray", size = 1))
+
+```
+<br>
+
+**Conclusion:** In this situation it is seen that there is a negative correlation between the data of calories burned and the time needed by users to fall asleep, i.e. the more calories burned the less time it takes users to fall asleep.
+
+## Share{.tabset .tabset-fade}
+
+In this case study, our goal was to answer business questions that will help the BellaBeat marketing strategy team make decisions. Decisions will be made based on the findings and insights we gained throughout this case study. Based on this, we can share a summary of the key findings:
+
+- The first hypothesis raised was that most users are in the sedentary category, based on the average minutes spent in sedentary activities. From the data of steps per day we can confirm that **most users perform activities considered inactive and moderate activities with a total of 79% of BellaBeat users.**
+
+- Evaluating the data of steps taken during the week **it was seen that the users do not perform the necessary amount of steps per day, staying below 10 000 steps per day.** Over the day **we can highlight a drop in steps taken around 15h and after 19h.**
+
+- Regarding the sleep data, **we can highlight that 54% of the users sleep less than 7h a day**, with this **tendency occurring on days like Tuesday, Friday and Saturday.**
+
+- Investigating if there are correlations between the data, **it was found that the more steps per day the more calories are burned while the more calories burned help the users to sleep faster.**
+
+## Act{.tabset .tabset-fade}
+
+<br>
+
+Bellabeat's mission is to empower women for self-awareness by helping them understand themselves in order to help them achieve their personal goals through the syncing of body, mind and cycle. In this way, from our findings on FitBit Fitness Tracker Data, we can make some recommendations for the Bellabeat App and the Bellabeat online campaign.
+
+<br>
+
+**Bellabeat App:**
+
+- As it was seen that most users are in low activity category. **Bellabeat app can recommend different activities (Yoga, Walking, Running, Biking) based on the user profile in order to encourage these users to move more.** It shows the users in each activity the average caloric expenditure, the benefits obtained from it, and the amount of minutes needed to perform it in order to reach their daily goal.
+
+- Based on the fact that users do not reach the recommended 10 000 steps per day target and this can be achieved if users are more consistent throughout the day. **Bellabeat App could notify users throughout the day to get up and take some steps.** To do this **Bellabeat could not only notify users with motivational messages, but also reward them with points that could be used as a discount when purchasing new products from the brand.**
+
+- Since more than half of the users (54%) sleep less than recommended (< 7h), **BellaBeat app could recommend users an hour before their sleep window to do relaxing activities that stimulate sleep, such as reading books, meditating, drinking tea, unplugging electronics, and others.**
+
+<br>
+
+**Bellabeat online campaign:**
+
+- In the steps and sleep data it was seen that some specific times and days users have less activity in relation to steps and sleep. **BellaBeat online campaign could focus on these times, i.e., after office hours and on weekends. Promote educational campaigns about the benefits of physical activity and sleep quality.**
+
+## References{.tabset .tabset-fade}
+
+<br>
+
+- *Yuenyongchaiwat K.* Effects of 10,000 steps a day on physical and mental health in overweight participants in a community setting: a preliminary study. Braz J Phys Ther. 2016 Jul-Aug;20(4):367-73. doi: 10.1590/bjpt-rbf.2014.0160. Epub 2016 Jun 16. PMID: 27556393; PMCID: PMC5015672.
+
+- *Tudor-Locke, C., Craig, C.L., Brown, W.J. et al.* How many steps/day are enough? for adults. Int J Behav Nutr Phys Act 8, 79 (2011).
+
+- *Hirshkowitz M, Whiton K, Albert SM, Alessi C, Bruni O, DonCarlos L, Hazen N, Herman J, Katz ES, Kheirandish-Gozal L, Neubauer DN, O'Donnell AE, Ohayon M, Peever J, Rawding R, Sachdeva RC, Setters B, Vitiello MV, Ware JC, Adams Hillard PJ.* National Sleep Foundation's sleep time duration recommendations: methodology and results summary. Sleep Health. 2015 Mar;1(1):40-43. doi: 10.1016/j.sleh.2014.12.010. Epub 2015 Jan 8. PMID: 29073412.
+
+- *Cappuccio FP, D'Elia L, Strazzullo P, Miller MA.* Sleep duration and all-cause mortality: a systematic review and meta-analysis of prospective studies. Sleep. 2010 May;33(5):585-92. doi: 10.1093/sleep/33.5.585. PMID: 20469800; PMCID: PMC2864873.
 
