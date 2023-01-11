@@ -6,7 +6,7 @@ Date: December 1, 2022
 
 Name: Ana Maria Baptisttella
 
-*This is my final project to achieve [the Google Data Analytics Professional Certificate](https://www.coursera.org/professional-certificates/google-data-analytics?utm_source=gg&utm_medium=sem&utm_campaign=15-GoogleDataAnalytics-LATAM&utm_content=B2C&campaignid=12686019520&adgroupid=120140812253&device=c&keyword=coursera%20data%20analytics%20course&matchtype=b&network=g&devicemodel=&adpostion=&creativeid=512414119184&hide_mobile_promo&gclid=CjwKCAiAheacBhB8EiwAItVO22yG1oGqEI1c2Ys5nHt8gdFj9f3FZ6yRCoW3fgajRAek_tsPn4KkdBoCYtoQAvD_BwE) from Coursera.*
+*This is my final project to achieve [Google Data Analytics Professional Certificate](https://www.coursera.org/professional-certificates/google-data-analytics?utm_source=gg&utm_medium=sem&utm_campaign=15-GoogleDataAnalytics-LATAM&utm_content=B2C&campaignid=12686019520&adgroupid=120140812253&device=c&keyword=coursera%20data%20analytics%20course&matchtype=b&network=g&devicemodel=&adpostion=&creativeid=512414119184&hide_mobile_promo&gclid=CjwKCAiAheacBhB8EiwAItVO22yG1oGqEI1c2Ys5nHt8gdFj9f3FZ6yRCoW3fgajRAek_tsPn4KkdBoCYtoQAvD_BwE) from Coursera.*
 
 ------------------------------------------------------------------------
 
