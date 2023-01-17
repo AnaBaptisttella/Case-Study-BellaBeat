@@ -149,7 +149,7 @@ day_sleep <- read_csv("sleepDay_merged.csv")
 ```
 <br>
 
-After that, to view dataframes and check the structure of dataframes, data type and column names, str() function is used to check these information:
+After that, to view dataframes and check the structure of dataframes, data type and column names, 'str() function' is used to check these information:
 
 <br>
 ```{r message=FALSE, warning=FALSE}
@@ -327,7 +327,7 @@ day_activity_sleep_df <- merge(daily_activity_clean, day_sleep_clean, by = c("Id
 
 hour_df <- merge(merge(hourly_calories_clean, hourly_intensities_clean, by = c("Id","ActivityDate", "ActivityHour")), hourly_steps_clean, by = c("Id","ActivityDate", "ActivityHour"))  
 
-#chekcing the final structure
+#checking the final structure
 
 glimpse(day_activity_sleep_df)
 
@@ -339,7 +339,7 @@ glimpse(hour_df)
 
 <br>
 
-To begin the analysis step and establish hypotheses about the available data, it is interesting to first evaluate the statistical data to gain first insights. In this way, the 'summary() function' automatically calculates key statistics from the data frames, which allows with the outputs to explore the data. From the dataframes it is seen that only a few variables are interesting to investigate for statistical analysis and further analysis, such as: Total Steps or Steps, Active by level in minutes (Very, Fairly, Lightly, Sedentary), Calories, Total minutes asleep and Total Time in Bed.
+To begin the analysis step and establish hypotheses about the available data, it is interesting to first evaluate the statistical data to gain first insights. In this way, the 'summary() function' automatically calculates key statistics from the dataframes, which allows with the outputs to explore the data. From the dataframes it is seen that only a few variables are interesting to investigate for statistical analysis and further analysis, such as: Total Steps or Steps, Active by level in minutes (Very, Fairly, Lightly, Sedentary), Calories, Total minutes asleep and Total Time in Bed.
 
 <br>
 ```{r message=FALSE, warning=FALSE}
@@ -397,7 +397,7 @@ Id_mean_total_steps <- day_activity_sleep_df %>%
              
 head(Id_mean_total_steps)
 
-#categorizing data by activity level             
+#categorising data by activity level             
              
 activity_level_by_user <- Id_mean_total_steps %>%
                mutate(user_level = case_when(
@@ -419,7 +419,7 @@ percentage_user_level <- activity_level_by_user %>%
 
 head(percentage_user_level)
 
-#visualizing the data: Distribution of users by activity level
+#visualising the data: Distribution of users by activity level
 
 colors <-  c("#33CC00", "#FF3333", "#FBC932", "#56B4E9")
 
@@ -446,7 +446,7 @@ ggplot(data = percentage_user_level, aes(x="", y = percent_by_user, fill = user_
 
 <br>
 
--**By weekday (Monday through Sunday):** In order to understand the users' profiles and help Bellabeat's marketing team to make decisions, it is necessary to evaluate how these users behave throughout the week and during the hours of the day. The following data will be organized in a weekday perspective for all users:
+-**By weekday (Monday through Sunday):** In order to understand the users' profiles and help Bellabeat's marketing team to make decisions, it is necessary to evaluate how these users behave throughout the week and during the hours of the day. The following data will be organised in a weekday perspective for all users:
 
 <br>
 ```{r message=FALSE, warning=FALSE}
@@ -460,7 +460,7 @@ weekday_total_steps <- daily_activity_clean %>%
    summarise(mean_TotalSteps = mean(TotalSteps)) %>% 
    mutate(weekday = factor(weekday, levels = c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'))) 
 
-#Visualizing the data: Total Steps(average) per weekday
+#Visualising the data: Total Steps(average) per weekday
 
 ggplot(weekday_total_steps, aes(x = weekday, y = mean_TotalSteps, fill = "#FFB40F"))+
    geom_bar(stat='identity') +
@@ -489,7 +489,7 @@ hourly_total_steps <- hourly_steps_clean %>%
   group_by(ActivityHour) %>% 
   summarise(mean_TotalSteps = mean(StepTotal))
   
-#Visualizing the data: Total Steps(average) per hour
+#Visualising the data: Total Steps(average) per hour
 
 ggplot(hourly_total_steps, aes(x = ActivityHour, y = mean_TotalSteps, fill = "#FFB40F"))+
   geom_bar(stat='identity') +
@@ -528,7 +528,7 @@ sleep_duration_by_user <- day_activity_sleep_df %>%
   mutate(Total_Asleep_Hour = TotalMinutesAsleep/60, Total_TimeInBed_Hour = TotalTimeInBed/60) %>% 
   mutate(Total_Time_fall_Asleep_Minutes = (TotalTimeInBed - TotalMinutesAsleep))
          
-#Categorizing sleep data         
+#Categorising sleep data         
  
 sleep_duration_distribuition <-  sleep_duration_by_user %>% 
   group_by(Id) %>% 
@@ -547,7 +547,7 @@ percentage_user <- sleep_duration_distribuition %>%
   mutate(labels = scales::percent(percent_by_user)) %>% 
   mutate(sleep_duration = factor(sleep_duration, levels = c('Short Sleep', 'Ideal Sleep', 'Long Sleep')))
 
-#Visualizing the data: Percentage of users by sleep duration
+#Visualising the data: Percentage of users by sleep duration
 
 colors <-  c("#FF3333", "#FBC932",  "#33CC00")
 
@@ -643,12 +643,12 @@ ggplot(data = day_activity_sleep_df, aes(x = TotalSteps, y = Calories)) +
 
 <br>
 
-**2. If the calories expended during the day influences the time to fall asleep**
+**2. If the calories expended during the day influences the time to falling asleep**
 
 <br>
 ```{r message=FALSE, warning=FALSE}
 
-# Calories burned vs Total Time Fall Asleep (per day)
+# Calories burned vs Total Time Falling Asleep (per day)
 
 # Calculating total time for Asleep 
 
@@ -667,7 +667,7 @@ ggplot(data = calories_sleep_df, aes(x = Total_Time_fall_Asleep_Minutes, y = Cal
 ```
 <br>
 
-**Conclusion:** In this situation it is seen that there is a negative correlation between the data of calories burned and the time needed by users to fall asleep, i.e. the more calories burned the less time it takes users to fall asleep.
+**Conclusion:** In this situation it is seen that there is a negative correlation between the data of calories burned and the time needed by users to fall asleep, i.e. the more calories burned the less time it takes users to falling asleep.
 
 ## Share{.tabset .tabset-fade}
 

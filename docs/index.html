@@ -1024,7 +1024,7 @@ hourly_steps &lt;- read_csv(&quot;hourlySteps_merged.csv&quot;)
 day_sleep &lt;- read_csv(&quot;sleepDay_merged.csv&quot;)</code></pre>
 <p><br></p>
 <p>After that, to view dataframes and check the structure of dataframes,
-data type and column names, str() function is used to check these
+data type and column names, ‘str() function’ is used to check these
 information:</p>
 <p><br></p>
 <pre class="r"><code>#Preview of dataframes 
@@ -1315,7 +1315,7 @@ day_activity_sleep_df &lt;- merge(daily_activity_clean, day_sleep_clean, by = c(
 
 hour_df &lt;- merge(merge(hourly_calories_clean, hourly_intensities_clean, by = c(&quot;Id&quot;,&quot;ActivityDate&quot;, &quot;ActivityHour&quot;)), hourly_steps_clean, by = c(&quot;Id&quot;,&quot;ActivityDate&quot;, &quot;ActivityHour&quot;))  
 
-#chekcing the final structure
+#checking the final structure
 
 glimpse(day_activity_sleep_df)</code></pre>
 <pre><code>## Rows: 410
@@ -1355,7 +1355,7 @@ glimpse(day_activity_sleep_df)</code></pre>
 <p>To begin the analysis step and establish hypotheses about the
 available data, it is interesting to first evaluate the statistical data
 to gain first insights. In this way, the ‘summary() function’
-automatically calculates key statistics from the data frames, which
+automatically calculates key statistics from the dataframes, which
 allows with the outputs to explore the data. From the dataframes it is
 seen that only a few variables are interesting to investigate for
 statistical analysis and further analysis, such as: Total Steps or
@@ -1463,7 +1463,7 @@ head(Id_mean_total_steps)</code></pre>
 ## 4 1927972279           1490 
 ## 5 2026352035           5619.
 ## 6 2320127002           5079</code></pre>
-<pre class="r"><code>#categorizing data by activity level             
+<pre class="r"><code>#categorising data by activity level             
              
 activity_level_by_user &lt;- Id_mean_total_steps %&gt;%
                mutate(user_level = case_when(
@@ -1499,7 +1499,7 @@ head(percentage_user_level)</code></pre>
 ## 2 Inactive                 0.208  20.8% 
 ## 3 Moderate Active          0.583  58.3% 
 ## 4 Very Active              0.0417 4.2%</code></pre>
-<pre class="r"><code>#visualizing the data: Distribution of users by activity level
+<pre class="r"><code>#visualising the data: Distribution of users by activity level
 
 colors &lt;-  c(&quot;#33CC00&quot;, &quot;#FF3333&quot;, &quot;#FBC932&quot;, &quot;#56B4E9&quot;)
 
@@ -1528,7 +1528,7 @@ active category.</p>
 understand the users’ profiles and help Bellabeat’s marketing team to
 make decisions, it is necessary to evaluate how these users behave
 throughout the week and during the hours of the day. The following data
-will be organized in a weekday perspective for all users:</p>
+will be organised in a weekday perspective for all users:</p>
 <p><br></p>
 <pre class="r"><code>#By weekday (Monday through Sunday) 
 
@@ -1539,7 +1539,7 @@ weekday_total_steps &lt;- daily_activity_clean %&gt;%
    summarise(mean_TotalSteps = mean(TotalSteps)) %&gt;% 
    mutate(weekday = factor(weekday, levels = c(&#39;Monday&#39;, &#39;Tuesday&#39;, &#39;Wednesday&#39;, &#39;Thursday&#39;, &#39;Friday&#39;, &#39;Saturday&#39;, &#39;Sunday&#39;))) 
 
-#Visualizing the data: Total Steps(average) per weekday
+#Visualising the data: Total Steps(average) per weekday
 
 ggplot(weekday_total_steps, aes(x = weekday, y = mean_TotalSteps, fill = &quot;#FFB40F&quot;))+
    geom_bar(stat=&#39;identity&#39;) +
@@ -1564,7 +1564,7 @@ hourly_total_steps &lt;- hourly_steps_clean %&gt;%
   group_by(ActivityHour) %&gt;% 
   summarise(mean_TotalSteps = mean(StepTotal))
   
-#Visualizing the data: Total Steps(average) per hour
+#Visualising the data: Total Steps(average) per hour
 
 ggplot(hourly_total_steps, aes(x = ActivityHour, y = mean_TotalSteps, fill = &quot;#FFB40F&quot;))+
   geom_bar(stat=&#39;identity&#39;) +
@@ -1602,7 +1602,7 @@ sleep_duration_by_user &lt;- day_activity_sleep_df %&gt;%
   mutate(Total_Asleep_Hour = TotalMinutesAsleep/60, Total_TimeInBed_Hour = TotalTimeInBed/60) %&gt;% 
   mutate(Total_Time_fall_Asleep_Minutes = (TotalTimeInBed - TotalMinutesAsleep))
          
-#Categorizing sleep data         
+#Categorising sleep data         
  
 sleep_duration_distribuition &lt;-  sleep_duration_by_user %&gt;% 
   group_by(Id) %&gt;% 
@@ -1621,7 +1621,7 @@ percentage_user &lt;- sleep_duration_distribuition %&gt;%
   mutate(labels = scales::percent(percent_by_user)) %&gt;% 
   mutate(sleep_duration = factor(sleep_duration, levels = c(&#39;Short Sleep&#39;, &#39;Ideal Sleep&#39;, &#39;Long Sleep&#39;)))
 
-#Visualizing the data: Percentage of users by sleep duration
+#Visualising the data: Percentage of users by sleep duration
 
 colors &lt;-  c(&quot;#FF3333&quot;, &quot;#FBC932&quot;,  &quot;#33CC00&quot;)
 
@@ -1711,9 +1711,9 @@ taken per day, i.e. the more steps a user takes per day, the more
 calories will be burned.</p>
 <p><br></p>
 <p><strong>2. If the calories expended during the day influences the
-time to fall asleep</strong></p>
+time to falling asleep</strong></p>
 <p><br></p>
-<pre class="r"><code># Calories burned vs Total Time Fall Asleep (per day)
+<pre class="r"><code># Calories burned vs Total Time Falling Asleep (per day)
 
 # Calculating total time for Asleep 
 
@@ -1733,7 +1733,7 @@ ggplot(data = calories_sleep_df, aes(x = Total_Time_fall_Asleep_Minutes, y = Cal
 <p><strong>Conclusion:</strong> In this situation it is seen that there
 is a negative correlation between the data of calories burned and the
 time needed by users to fall asleep, i.e. the more calories burned the
-less time it takes users to fall asleep.</p>
+less time it takes users to falling asleep.</p>
 </div>
 <div id="share" class="section level2 tabset tabset-fade">
 <h2 class="tabset tabset-fade">Share</h2>
