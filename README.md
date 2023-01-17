@@ -10,12 +10,12 @@ Name: Ana Maria Baptisttella
 
 ------------------------------------------------------------------------
 
-In this case study, BellaBeat, I will perform many tasks to analyze smart device data to gain insight into how consumers are using their smart devices. In order to perform these tasks and answer the key business questions, I will follow the steps of the data analytics process:
+In this case study, BellaBeat, I will perform many tasks to analyse smart device data to gain insight into how consumers are using their smart devices. In order to perform these tasks and answer the key business questions, I will follow the steps of the data analytics process:
 
 1.  Ask
 2.  Prepare
 3.  Process
-4.  Analyze
+4.  Analyse
 5.  Share
 6.  Act
 
